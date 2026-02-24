@@ -33,13 +33,13 @@ const Footer = () => {
             <h4 className="font-serif font-semibold text-primary-foreground mb-4">Contact Us</h4>
             <ul className="space-y-3">
               <li>
-                <a href="https://wa.me/966500000000" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-primary-foreground/60 hover:text-gold-light transition-colors">
-                  <MessageCircle className="w-4 h-4 text-accent" /> +966 50 000 0000
+                <a href={`https://wa.me/6285646420488?text=${encodeURIComponent('Halo, saya tertarik dengan layanan Transport in Saudi Arabia.')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-primary-foreground/60 hover:text-gold-light transition-colors">
+                  <MessageCircle className="w-4 h-4 text-accent" /> +62 856 4642 0488 
                 </a>
               </li>
               <li>
-                <a href="tel:+966500000000" className="flex items-center gap-3 text-sm text-primary-foreground/60 hover:text-gold-light transition-colors">
-                  <Phone className="w-4 h-4 text-accent" /> +966 50 000 0000
+                <a href="tel:+6285646420488" className="flex items-center gap-3 text-sm text-primary-foreground/60 hover:text-gold-light transition-colors">
+                  <Phone className="w-4 h-4 text-accent" /> +62 856 4642 0488 
                 </a>
               </li>
               <li>

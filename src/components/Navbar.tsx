@@ -14,6 +14,8 @@ const Navbar = () => {
     { href: "#contact", label: "Contact" },
   ];
 
+  const phone = "6285646420488";
+  const text = "Halo, saya tertarik dengan layanan Transport in Saudi Arabia.";
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -37,7 +39,7 @@ const Navbar = () => {
 
         <div className="hidden lg:flex items-center gap-3">
           <a
-            href="https://wa.me/966500000000"
+            href={`https://wa.me/${phone}?text=${encodeURIComponent(text)}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -76,7 +78,7 @@ const Navbar = () => {
             </a>
           ))}
           <div className="flex gap-2 pt-2">
-            <a href="https://wa.me/966500000000" target="_blank" rel="noopener noreferrer" className="flex-1">
+            <a href={`https://wa.me/${phone}?text=${encodeURIComponent(text)}`} target="_blank" rel="noopener noreferrer" className="flex-1">
               <Button variant="outline" size="sm" className="w-full border-primary/30 text-primary">
                 <Phone className="w-4 h-4 mr-2" /> WhatsApp
               </Button>

@@ -4,6 +4,8 @@ import { Button } from "./ui/button";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const HeroSection = () => {
+  const phone = "6285646420488";
+  const text = "Halo, saya tertarik dengan layanan Transport in Saudi Arabia.";
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background */}
@@ -57,7 +59,7 @@ const HeroSection = () => {
                 Book Now <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </a>
-            <a href="https://wa.me/966500000000" target="_blank" rel="noopener noreferrer">
+            <a href={`https://wa.me/${phone}?text=${encodeURIComponent(text)}`} target="_blank" rel="noopener noreferrer">
               <Button size="lg" variant="outline" className="border-gold/40 text-gold-light hover:bg-gold/10 text-base px-8 py-6">
                 <MessageCircle className="w-5 h-5 mr-2" /> WhatsApp Booking
               </Button>

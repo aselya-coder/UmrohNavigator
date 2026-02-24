@@ -42,8 +42,9 @@ const BookingSection = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const message = `*New Booking Request*%0A%0AName: ${formData.name}%0ACountry: ${formData.country}%0AEmail: ${formData.email}%0ADate: ${formData.date}%0ATime: ${formData.time}%0APickup: ${formData.pickup}%0ADropoff: ${formData.dropoff}%0APassengers: ${formData.passengers}%0AVehicle: ${formData.vehicle}`;
-    window.open(`https://wa.me/966500000000?text=${message}`, "_blank");
+    const text = `*New Booking Request*\n\nName: ${formData.name}\nCountry: ${formData.country}\nEmail: ${formData.email}\nDate: ${formData.date}\nTime: ${formData.time}\nPickup: ${formData.pickup}\nDropoff: ${formData.dropoff}\nPassengers: ${formData.passengers}\nVehicle: ${formData.vehicle}`;
+    const phone = "6285646420488";
+    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank");
     toast({
       title: "Booking Sent!",
       description: "Your booking request has been sent via WhatsApp.",

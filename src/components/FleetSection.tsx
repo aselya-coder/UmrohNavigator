@@ -2,6 +2,10 @@ import { motion } from "framer-motion";
 import { Users, Briefcase, Clock, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
 
+const fallbackImages: Record<string, string> = {
+  "Luxury VIP Van": "https://images.unsplash.com/photo-1549317661-bd32c8ce0afe?w=600&h=400&fit=crop",
+};
+
 const vehicles = [
   {
     name: "Toyota Camry",
@@ -55,7 +59,7 @@ const vehicles = [
     luggage: 6,
     pricePerTrip: "SAR 800",
     pricePerHour: "SAR 200",
-    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0afe?w=600&h=400&fit=crop",
+    image: "/luxury-vip-van.jpg",
   },
 ];
 
@@ -94,6 +98,12 @@ const FleetSection = () => {
                   alt={v.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
+                  onError={(e) => {
+                    const fb = fallbackImages[v.name];
+                    if (fb && e.currentTarget.src !== fb) {
+                      e.currentTarget.src = fb;
+                    }
+                  }}
                 />
               </div>
               <div className="p-6">
