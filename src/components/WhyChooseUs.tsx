@@ -1,7 +1,13 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Shield, Clock, Car, Globe, DollarSign, Heart } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
-const reasons = [
+type ReasonView = { icon: React.ComponentType<{ className?: string }>; title: string; desc: string };
+
+const iconCycle = [Globe, Shield, Clock, Car, DollarSign, Heart];
+
+const defaultReasons: ReasonView[] = [
   { icon: Globe, title: "Multilingual Drivers", desc: "Drivers speak Indonesian, English & Arabic" },
   { icon: Shield, title: "Experienced & Licensed", desc: "Years of Umrah & Hajj transport experience" },
   { icon: Clock, title: "Always On Time", desc: "Punctual pickup guaranteed, 24/7 availability" },
@@ -11,6 +17,24 @@ const reasons = [
 ];
 
 const WhyChooseUs = () => {
+  const [reasons, setReasons] = useState<ReasonView[]>(defaultReasons);
+
+  useEffect(() => {
+    supabase
+      .from("why_choose_us")
+      .select("*")
+      .then(({ data, error }) => {
+        if (error) return;
+        const rows = (data || []) as unknown[];
+        if (!rows.length) return;
+        const mapped = rows.map((row, idx) => {
+          const w = row as { title: string; description: string };
+          return { icon: iconCycle[idx % iconCycle.length], title: w.title, desc: w.description };
+        });
+        setReasons(mapped);
+      });
+  }, []);
+
   return (
     <section className="py-24 bg-muted">
       <div className="container mx-auto px-4">

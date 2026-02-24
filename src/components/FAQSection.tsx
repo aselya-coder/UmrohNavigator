@@ -1,7 +1,11 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import { supabase } from "@/lib/supabaseClient";
 
-const faqs = [
+type FaqView = { q: string; a: string };
+
+const defaultFaqs: FaqView[] = [
   {
     q: "How do I book a vehicle for my Umrah trip?",
     a: "Simply fill in our booking form or contact us via WhatsApp. Provide your travel dates, pickup/drop-off locations, and group size. We'll confirm availability and pricing instantly.",
@@ -29,6 +33,24 @@ const faqs = [
 ];
 
 const FAQSection = () => {
+  const [faqs, setFaqs] = useState<FaqView[]>(defaultFaqs);
+
+  useEffect(() => {
+    supabase
+      .from("faq")
+      .select("*")
+      .then(({ data, error }) => {
+        if (error) return;
+        const rows = (data || []) as unknown[];
+        if (!rows.length) return;
+        const mapped = rows.map((row) => {
+          const f = row as { question: string; answer: string };
+          return { q: f.question, a: f.answer };
+        });
+        setFaqs(mapped);
+      });
+  }, []);
+
   return (
     <section id="faq" className="py-24 bg-background">
       <div className="container mx-auto px-4">

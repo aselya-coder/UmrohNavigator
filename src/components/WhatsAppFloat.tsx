@@ -1,7 +1,21 @@
 import { MessageCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
 
 const WhatsAppFloat = () => {
-  const phone = "6285646420488";
+  const [phone, setPhone] = useState("6285646420488");
+  useEffect(() => {
+    supabase
+      .from("settings")
+      .select("whatsapp")
+      .order("id", { ascending: true })
+      .limit(1)
+      .then(({ data, error }) => {
+        if (!error && data && data[0]?.whatsapp) {
+          setPhone(String(data[0].whatsapp));
+        }
+      });
+  }, []);
   const text = "Halo, saya tertarik dengan layanan Transport in Saudi Arabia.";
   const href = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
   return (

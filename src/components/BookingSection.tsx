@@ -1,13 +1,14 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabaseClient";
 
-const vehicles = [
+const defaultVehicles = [
   "Toyota Camry (1-3 pax)",
   "Hyundai H1 (1-6 pax)",
   "GMC Yukon (1-7 pax)",
@@ -27,6 +28,8 @@ const locations = [
 
 const BookingSection = () => {
   const { toast } = useToast();
+  const [vehicles, setVehicles] = useState<string[]>(defaultVehicles);
+  const [targetWa, setTargetWa] = useState("6285646420488");
   const [formData, setFormData] = useState({
     name: "",
     country: "",
@@ -40,11 +43,44 @@ const BookingSection = () => {
     vehicle: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    supabase
+      .from("fleet")
+      .select("name, capacity")
+      .then(({ data }) => {
+        const rows = (data || []) as unknown[];
+        if (rows.length) {
+          const vs = rows.map((row) => {
+            const d = row as { name: string; capacity: number };
+            return `${d.name} (${d.capacity} pax)`;
+          });
+          setVehicles(vs);
+        }
+      });
+    supabase
+      .from("settings")
+      .select("whatsapp")
+      .order("id", { ascending: true })
+      .limit(1)
+      .then(({ data }) => {
+        if (data && data[0]?.whatsapp) setTargetWa(String(data[0].whatsapp));
+      });
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const text = `*New Booking Request*\n\nName: ${formData.name}\nCountry: ${formData.country}\nEmail: ${formData.email}\nDate: ${formData.date}\nTime: ${formData.time}\nPickup: ${formData.pickup}\nDropoff: ${formData.dropoff}\nPassengers: ${formData.passengers}\nVehicle: ${formData.vehicle}`;
-    const phone = "6285646420488";
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank");
+    await supabase.from("booking").insert([
+      {
+        name: formData.name,
+        phone: formData.whatsapp,
+        service: formData.vehicle || "N/A",
+        date: formData.date || null,
+        pickup: formData.pickup || "",
+        destination: formData.dropoff || "",
+      },
+    ]);
+    window.open(`https://wa.me/${targetWa}?text=${encodeURIComponent(text)}`, "_blank");
     toast({
       title: "Booking Sent!",
       description: "Your booking request has been sent via WhatsApp.",

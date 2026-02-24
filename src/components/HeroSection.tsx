@@ -1,10 +1,48 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { ArrowRight, MessageCircle, DollarSign } from "lucide-react";
 import { Button } from "./ui/button";
 import heroBg from "@/assets/hero-bg.jpg";
+import { supabase } from "@/lib/supabaseClient";
 
 const HeroSection = () => {
-  const phone = "6285646420488";
+  const [phone, setPhone] = useState("6285646420488");
+  const [title, setTitle] = useState("Premium Umrah Transport");
+  const [subtitle, setSubtitle] = useState("in Saudi Arabia");
+  const [badge, setBadge] = useState("Trusted by 10,000+ Pilgrims");
+  const [motto, setMotto] = useState("Safe • Private • Comfortable • Trusted");
+  const [tagline, setTagline] = useState("Airport Transfer – Intercity – Ziarah Tour");
+  useEffect(() => {
+    supabase
+      .from("settings")
+      .select("whatsapp")
+      .order("id", { ascending: true })
+      .limit(1)
+      .then(({ data, error }) => {
+        if (!error && data && data[0]?.whatsapp) setPhone(String(data[0].whatsapp));
+      });
+    supabase
+      .from("hero")
+      .select("title, subtitle, badge_text, motto_line, tagline_line")
+      .order("id", { ascending: true })
+      .limit(1)
+      .then(({ data, error }) => {
+        if (!error && data && data[0]) {
+          const h = data[0] as {
+            title?: string;
+            subtitle?: string;
+            badge_text?: string;
+            motto_line?: string;
+            tagline_line?: string;
+          };
+          if (h.title) setTitle(String(h.title));
+          if (h.subtitle) setSubtitle(String(h.subtitle));
+          if (h.badge_text) setBadge(String(h.badge_text));
+          if (h.motto_line) setMotto(String(h.motto_line));
+          if (h.tagline_line) setTagline(String(h.tagline_line));
+        }
+      });
+  }, []);
   const text = "Halo, saya tertarik dengan layanan Transport in Saudi Arabia.";
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -31,20 +69,20 @@ const HeroSection = () => {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gold/30 bg-gold/10 mb-8"
           >
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            <span className="text-sm font-medium text-gold-light tracking-wide">Trusted by 10,000+ Pilgrims</span>
+            <span className="text-sm font-medium text-gold-light tracking-wide">{badge}</span>
           </motion.div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-primary-foreground leading-tight mb-6">
-            Premium Umrah Transport{" "}
-            <span className="text-gradient-gold">in Saudi Arabia</span>
+            {title}{" "}
+            <span className="text-gradient-gold">{subtitle}</span>
           </h1>
 
           <p className="text-lg md:text-xl text-gold-light/80 font-light mb-4 tracking-wide">
-            Safe &bull; Private &bull; Comfortable &bull; Trusted
+            {motto}
           </p>
 
           <p className="text-base md:text-lg text-primary-foreground/60 mb-10 max-w-2xl mx-auto">
-            Airport Transfer – Intercity – Ziarah Tour
+            {tagline}
           </p>
 
           {/* CTA Buttons */}

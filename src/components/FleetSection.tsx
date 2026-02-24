@@ -1,12 +1,24 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Users, Briefcase, Clock, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
+import { supabase } from "@/lib/supabaseClient";
 
 const fallbackImages: Record<string, string> = {
   "Luxury VIP Van": "https://images.unsplash.com/photo-1549317661-bd32c8ce0afe?w=600&h=400&fit=crop",
 };
 
-const vehicles = [
+type VehicleView = {
+  name: string;
+  type: string;
+  passengers: number;
+  luggage: number;
+  pricePerTrip: string;
+  pricePerHour: string;
+  image: string;
+};
+
+const defaultVehicles: VehicleView[] = [
   {
     name: "Toyota Camry",
     type: "Sedan",
@@ -64,6 +76,32 @@ const vehicles = [
 ];
 
 const FleetSection = () => {
+  const [vehicles, setVehicles] = useState<VehicleView[]>(defaultVehicles);
+
+  useEffect(() => {
+    supabase
+      .from("fleet")
+      .select("*")
+      .then(({ data, error }) => {
+        if (error) return;
+        const rows = (data || []) as unknown[];
+        if (!rows.length) return;
+        const mapped = rows.map((row) => {
+          const f = row as { name: string; capacity: number; price: string; image: string };
+          return {
+            name: f.name,
+            type: "Vehicle",
+            passengers: Number(f.capacity) || 0,
+            luggage: Math.max(0, Math.floor((Number(f.capacity) || 0) / 2)),
+            pricePerTrip: f.price,
+            pricePerHour: "—",
+            image: f.image,
+          };
+        });
+        setVehicles(mapped);
+      });
+  }, []);
+
   return (
     <section id="fleet" className="py-24 bg-muted">
       <div className="container mx-auto px-4">

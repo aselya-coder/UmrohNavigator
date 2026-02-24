@@ -1,7 +1,11 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Star, Quote } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
-const testimonials = [
+type TestimonialView = { name: string; country: string; text: string; rating: number };
+
+const defaultTestimonials: TestimonialView[] = [
   {
     name: "Ahmad Hidayat",
     country: "Indonesia",
@@ -29,6 +33,24 @@ const testimonials = [
 ];
 
 const TestimonialsSection = () => {
+  const [testimonials, setTestimonials] = useState<TestimonialView[]>(defaultTestimonials);
+
+  useEffect(() => {
+    supabase
+      .from("testimonials")
+      .select("*")
+      .then(({ data, error }) => {
+        if (error) return;
+        const rows = (data || []) as unknown[];
+        if (!rows.length) return;
+        const mapped = rows.map((row) => {
+          const t = row as { name: string; role: string; message: string };
+          return { name: t.name, country: t.role, text: t.message, rating: 5 };
+        });
+        setTestimonials(mapped);
+      });
+  }, []);
+
   return (
     <section id="testimonials" className="py-24 bg-gradient-emerald">
       <div className="container mx-auto px-4">

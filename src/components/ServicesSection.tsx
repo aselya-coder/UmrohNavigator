@@ -1,40 +1,69 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Plane, ArrowLeftRight, Moon } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient";
 
-const services = [
+type ServiceView = {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  items: string[];
+  description: string;
+};
+
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Plane,
+  ArrowLeftRight,
+  Moon,
+};
+
+const fallbackItems: Record<string, string[]> = {
+  "Airport Transfer": ["Jeddah Airport → Makkah", "Madinah Airport → Hotel", "VIP Fast Pickup"],
+  "Intercity Transfer": ["Makkah ↔ Madinah", "Makkah ↔ Jeddah", "Private Family Transport"],
+  "Ziarah Tour": ["City tour religious sites", "Historical Islamic tour", "Experienced driver guide"],
+};
+
+const defaultServices: ServiceView[] = [
   {
     icon: Plane,
     title: "Airport Transfer",
-    items: [
-      "Jeddah Airport → Makkah",
-      "Madinah Airport → Hotel",
-      "VIP Fast Pickup",
-    ],
+    items: fallbackItems["Airport Transfer"],
     description: "Seamless airport pick-up and drop-off with meet & greet service.",
   },
   {
     icon: ArrowLeftRight,
     title: "Intercity Transfer",
-    items: [
-      "Makkah ↔ Madinah",
-      "Makkah ↔ Jeddah",
-      "Private Family Transport",
-    ],
+    items: fallbackItems["Intercity Transfer"],
     description: "Comfortable intercity travel between holy cities.",
   },
   {
     icon: Moon,
     title: "Ziarah Tour",
-    items: [
-      "City tour religious sites",
-      "Historical Islamic tour",
-      "Experienced driver guide",
-    ],
+    items: fallbackItems["Ziarah Tour"],
     description: "Visit sacred historical sites with knowledgeable drivers.",
   },
 ];
 
 const ServicesSection = () => {
+  const [services, setServices] = useState<ServiceView[]>(defaultServices);
+
+  useEffect(() => {
+    supabase
+      .from("services")
+      .select("*")
+      .then(({ data, error }) => {
+        if (error) return;
+        const rows = (data || []) as unknown[];
+        if (!rows.length) return;
+        const mapped = rows.map((row) => {
+          const s = row as { title: string; description: string; icon: string };
+          const Icon = iconMap[s.icon] || Plane;
+          const items = fallbackItems[s.title] || fallbackItems["Intercity Transfer"];
+          return { icon: Icon, title: s.title, description: s.description, items };
+        });
+        setServices(mapped);
+      });
+  }, []);
+
   return (
     <section id="services" className="py-24 bg-background">
       <div className="container mx-auto px-4">
