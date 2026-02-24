@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 
 type Testimonial = { id: number; name: string; role: string; message: string };
 
@@ -71,7 +71,10 @@ const TestimonialsAdmin = () => {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>{editing ? "Edit Testimonial" : "Tambah Testimonial"}</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>{editing ? "Edit Testimonial" : "Tambah Testimonial"}</DialogTitle>
+            <DialogDescription>Isi nama, peran/negara, dan pesan ulasan.</DialogDescription>
+          </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Name</Label>

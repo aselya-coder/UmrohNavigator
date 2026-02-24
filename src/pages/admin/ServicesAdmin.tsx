@@ -99,6 +99,7 @@ const ServicesAdmin = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{editing ? "Edit Service" : "Tambah Service"}</DialogTitle>
+            <DialogDescription>Isi detail layanan lalu tekan Simpan.</DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -125,6 +126,7 @@ const ServicesAdmin = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Konfirmasi Hapus</DialogTitle>
+            <DialogDescription>Tindakan ini tidak dapat dibatalkan.</DialogDescription>
           </DialogHeader>
           <p>Hapus item: {deleting?.title}</p>
           <DialogFooter>

@@ -3,10 +3,12 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
 import Sidebar from "./Sidebar.tsx";
 import Header from "./Header.tsx";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -54,20 +56,25 @@ const AdminLayout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-white grid grid-cols-[260px_1fr]">
-      <aside className="bg-[#111827] border-r border-white/10">
+    <div className="min-h-screen bg-[#0F172A] text-white grid md:grid-cols-[260px_1fr]">
+      <aside className="hidden md:block bg-[#111827] border-r border-white/10">
         <Sidebar />
       </aside>
       <main className="flex flex-col">
-        <Header />
-        <div className="p-6">
+        <Header onToggleSidebar={() => setSidebarOpen(true)} />
+        <div className="p-3 md:p-6">
           <div className="rounded-xl bg-white text-black shadow-sm">
-            <div className="p-6">
+            <div className="p-4 md:p-6">
               <Outlet />
             </div>
           </div>
         </div>
       </main>
+      <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
+        <SheetContent side="left" className="bg-[#111827] text-white p-0 w-full max-w-[18rem] sm:max-w-sm">
+          <Sidebar />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };

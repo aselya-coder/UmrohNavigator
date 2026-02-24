@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 
 type Hero = {
   id: number;
@@ -109,6 +109,7 @@ const HeroAdmin = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{editing ? "Edit Hero" : "Tambah Hero"}</DialogTitle>
+            <DialogDescription>Perbarui konten hero section lalu simpan.</DialogDescription>
           </DialogHeader>
           {editing && (
             <div className="mb-2 text-sm text-muted-foreground">ID: {editing.id}</div>
