@@ -13,13 +13,12 @@ const AdminLayout = () => {
   useEffect(() => {
     let mounted = true;
     const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      const session = data.session;
-      if (!session) {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) {
         if (mounted) navigate("/admin/login", { replace: true });
         return;
       }
-      const userId = session.user.id;
+      const userId = user.id;
       const { data: adminRows } = await supabase
         .from("admins")
         .select("id")

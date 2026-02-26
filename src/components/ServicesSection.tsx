@@ -55,9 +55,11 @@ const ServicesSection = () => {
         const rows = (data || []) as unknown[];
         if (!rows.length) return;
         const mapped = rows.map((row) => {
-          const s = row as { title: string; description: string; icon: string };
+          const s = row as { title: string; description: string; icon: string; items?: string };
           const Icon = iconMap[s.icon] || Plane;
-          const items = fallbackItems[s.title] || fallbackItems["Intercity Transfer"];
+          const items = s.items 
+            ? s.items.split(",").map(i => i.trim()) 
+            : (fallbackItems[s.title] || fallbackItems["Intercity Transfer"]);
           return { icon: Icon, title: s.title, description: s.description, items };
         });
         setServices(mapped);

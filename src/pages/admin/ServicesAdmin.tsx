@@ -10,13 +10,14 @@ type Service = {
   title: string;
   description: string;
   icon: string;
+  items?: string;
 };
 
 const ServicesAdmin = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Service | null>(null);
-  const [form, setForm] = useState<Omit<Service, "id">>({ title: "", description: "", icon: "" });
+  const [form, setForm] = useState<Omit<Service, "id">>({ title: "", description: "", icon: "", items: "" });
   const [deleting, setDeleting] = useState<Service | null>(null);
 
   const load = async () => {
@@ -30,13 +31,13 @@ const ServicesAdmin = () => {
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ title: "", description: "", icon: "" });
+    setForm({ title: "", description: "", icon: "", items: "" });
     setOpen(true);
   };
 
   const openEdit = (service: Service) => {
     setEditing(service);
-    setForm({ title: service.title, description: service.description, icon: service.icon });
+    setForm({ title: service.title, description: service.description, icon: service.icon, items: service.items || "" });
     setOpen(true);
   };
 
@@ -113,6 +114,11 @@ const ServicesAdmin = () => {
             <div className="space-y-2">
               <Label>Icon</Label>
               <Input value={form.icon} onChange={(e) => setForm((f) => ({ ...f, icon: e.target.value }))} />
+              <p className="text-[10px] text-muted-foreground">Options: Plane, ArrowLeftRight, Moon</p>
+            </div>
+            <div className="space-y-2">
+              <Label>Bullet Points (comma separated)</Label>
+              <Input value={form.items} onChange={(e) => setForm((f) => ({ ...f, items: e.target.value }))} placeholder="Item 1, Item 2, Item 3" />
             </div>
           </div>
           <DialogFooter>

@@ -87,14 +87,14 @@ const FleetSection = () => {
         const rows = (data || []) as unknown[];
         if (!rows.length) return;
         const mapped = rows.map((row) => {
-          const f = row as { name: string; capacity: number; price: string; image: string };
+          const f = row as { name: string; type?: string; capacity: number; price: string; price_per_hour?: string; image: string };
           return {
             name: f.name,
-            type: "Vehicle",
+            type: f.type || "Vehicle",
             passengers: Number(f.capacity) || 0,
             luggage: Math.max(0, Math.floor((Number(f.capacity) || 0) / 2)),
             pricePerTrip: f.price,
-            pricePerHour: "—",
+            pricePerHour: f.price_per_hour || "—",
             image: f.image,
           };
         });
